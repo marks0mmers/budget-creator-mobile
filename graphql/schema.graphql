@@ -1,0 +1,180 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"Budget object with all the attributes"
+type BudgetDto {
+    expenseSources: [ExpenseSourceDto!]!
+    id: Int!
+    incomeSources: [IncomeSourceDto!]!
+    title: String!
+    userId: Int!
+}
+
+"The Expense Category object"
+type ExpenseCategoryDto {
+    id: Int!
+    name: String!
+    subCategories: [ExpenseSubCategoryDto!]!
+}
+
+"The Expense Item Object"
+type ExpenseItemDto {
+    amount: Float!
+    dateTransacted: LocalDate!
+    expenseCategoryName: String!
+    expenseSourceId: Int!
+    expenseSourceName: String!
+    expenseSubCategoryName: String
+    id: Int!
+    name: String!
+}
+
+"The Expense Source object"
+type ExpenseSourceDto {
+    amount: Float!
+    category: ExpenseCategoryDto!
+    id: Int!
+    name: String!
+    subCategory: ExpenseSubCategoryDto
+}
+
+"The Expense Sub-Category Object"
+type ExpenseSubCategoryDto {
+    id: Int!
+    name: String!
+}
+
+"The Income Item Object"
+type IncomeItemDto {
+    amount: Float!
+    dateTransacted: LocalDate!
+    id: Int!
+    incomeSourceId: Int!
+    incomeSourceName: String!
+    name: String!
+}
+
+"The Income Source Object with all the attributes"
+type IncomeSourceDto {
+    amount: Float!
+    budgetId: Int!
+    id: Int!
+    name: String!
+}
+
+"Mutation object"
+type Mutation {
+    "Create a new budget"
+    createBudget(budgetInput: BudgetSubmissionView!, userId: Int!): BudgetDto!
+    "Creates an Expense Category"
+    createExpenseCategory(expenseCategoryInput: ExpenseCategorySubmissionView!, userId: Int!): ExpenseCategoryDto!
+    "Create an Expense Item"
+    createExpenseItem(expenseItemInput: ExpenseItemSubmissionView!): ExpenseItemDto!
+    "Create an expense source"
+    createExpenseSource(budgetId: Int!, expenseSourceInput: ExpenseSourceSubmissionView!): BudgetDto!
+    "Create an Expense Sub-Category"
+    createExpenseSubCategory(expenseCategoryId: Int!, expenseSubCategoryInput: ExpenseCategorySubmissionView!): ExpenseCategoryDto!
+    "Create an Income Item"
+    createIncomeItem(incomeItemInput: IncomeItemSubmissionView!): IncomeItemDto!
+    "Creates an Income Source"
+    createIncomeSource(budgetId: Int!, incomeSourceInput: IncomeSourceSubmissionView!): BudgetDto!
+    "Delete a budget"
+    deleteBudget(id: Int!): BudgetDto!
+    "Deletes an Expense Category"
+    deleteExpenseCategory(id: Int!): ExpenseCategoryDto!
+    "Delete an Expense Item"
+    deleteExpenseItem(id: Int!): ExpenseItemDto!
+    "Delete an Expense Source"
+    deleteExpenseSource(id: Int!): BudgetDto!
+    "Delete an Expense Sub-Category"
+    deleteExpenseSubCategory(id: Int!): ExpenseCategoryDto!
+    "Delete an Income Item"
+    deleteIncomeItem(id: Int!): IncomeItemDto!
+    "Delete an Income Source"
+    deleteIncomeSource(id: Int!): BudgetDto!
+    "Update a budget"
+    updateBudget(budgetInput: BudgetSubmissionView!, id: Int!): BudgetDto!
+    "Updates an Expense Category"
+    updateExpenseCategory(expenseCategoryInput: ExpenseCategorySubmissionView!, id: Int!): ExpenseCategoryDto!
+    "Update an Expense Item"
+    updateExpenseItem(expenseItemInput: ExpenseItemSubmissionView!, id: Int!): ExpenseItemDto!
+    "Update an Expense Source"
+    updateExpenseSource(expenseSourceInput: ExpenseSourceSubmissionView!, id: Int!): BudgetDto!
+    "Update an Expense Sub-Category"
+    updateExpenseSubCategory(expenseSubCategoryInput: ExpenseCategorySubmissionView!, id: Int!): ExpenseCategoryDto!
+    "Update an Income Item"
+    updateIncomeItem(id: Int!, incomeItemInput: IncomeItemSubmissionView!): IncomeItemDto!
+    "Updates an Income Source"
+    updateIncomeSource(id: Int!, incomeSourceInput: IncomeSourceSubmissionView!): BudgetDto!
+}
+
+"Query object"
+type Query {
+    "Get all budgets"
+    budgets(userId: Int!): [BudgetDto!]!
+    "Gets all Expense Categories for a User"
+    expenseCategories(userId: Int!): [ExpenseCategoryDto!]!
+    "Get Expense Items for Budget"
+    expenseItems(budgetId: Int!): [ExpenseItemDto!]!
+    "Get all Expense Sources by Budget"
+    expenseSources(budgetId: Int!): [ExpenseSourceDto!]!
+    "Fetch all Expense Sub-Categories by Expense Category Id"
+    expenseSubCategories(expenseCategoryId: Int!): [ExpenseSubCategoryDto!]!
+    "Get Income Items for Budget"
+    incomeItems(budgetId: Int!): [IncomeItemDto!]!
+    "Get Income Sources for a Budget"
+    incomeSources(budgetId: Int!): [IncomeSourceDto!]!
+}
+
+"The input of the budget without the identifier"
+input BudgetSubmissionView {
+    title: String!
+}
+
+"Expense Category and Sub-Category Submission Object"
+input ExpenseCategorySubmissionView {
+    name: String!
+}
+
+"The input object for Expense Items"
+input ExpenseItemSubmissionView {
+    amount: Float!
+    dateTransacted: LocalDate!
+    expenseSourceId: Int!
+    name: String!
+}
+
+"The input object for Expense Sources"
+input ExpenseSourceSubmissionView {
+    amount: Float!
+    categoryId: Int!
+    name: String!
+    subCategoryId: Int
+}
+
+"The input object for Income Items"
+input IncomeItemSubmissionView {
+    amount: Float!
+    dateTransacted: LocalDate!
+    incomeSourceId: Int!
+    name: String!
+}
+
+"The input of an income source without the id"
+input IncomeSourceSubmissionView {
+    amount: Float!
+    name: String!
+}
+
+
+"The Short scalar type represents a signed 16-bit numeric non-fractional value"
+scalar Short
+
+"The Long scalar type represents a signed 64-bit numeric non-fractional value"
+scalar Long
+
+scalar LocalDate

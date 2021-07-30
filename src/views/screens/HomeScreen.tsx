@@ -1,20 +1,22 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {
-    Alert,
-    Button,
     FlatList,
     ListRenderItemInfo,
     SafeAreaView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
 } from "react-native";
-import {useQuery} from "@apollo/client";
-import {GET_BUDGETS} from "../../graphql/BudgetQuery";
+import {useMutation, useQuery} from "@apollo/client";
+import {
+    ADD_BUDGET,
+    AddBudgetResult, AddBudgetVariables,
+    BudgetQueryResultList,
+    GET_BUDGETS,
+    GetBudgetsVariables
+} from "../../graphql/BudgetQuery";
 import {Budget} from "../../models/Budget";
 import {NavigationProp} from "@react-navigation/native";
-import {Icon} from "react-native-elements";
 import {HeaderButton} from "../shared/HeaderButton";
 
 interface Props {
@@ -22,15 +24,40 @@ interface Props {
 }
 
 export const HomeScreen = (props: Props) => {
+    const [budgets, setBudgets] = useState<Budget[]>([]);
+
     useEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
-                <HeaderButton name="add" />
+                <HeaderButton
+                    name="add"
+                    onPress={async () => {
+                        await addBudget({variables: {
+                            userId: 1,
+                            budgetInput: {
+                                title: "Testing"
+                            }
+                        }});
+                    }}
+                />
             )
         })
     }, []);
 
-    const {data, error, loading} = useQuery<{ budgets: Budget[] }>(GET_BUDGETS);
+    const {data, error, loading} = useQuery<BudgetQueryResultList, GetBudgetsVariables>(GET_BUDGETS, {variables: {userId: 1}});
+    const [addBudget, {data: addBudgetData}] = useMutation<AddBudgetResult, AddBudgetVariables>(ADD_BUDGET)
+
+    useEffect(() => {
+        if (data) {
+            setBudgets(data.budgets);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (addBudgetData?.addBudget) {
+            setBudgets([...budgets, addBudgetData.addBudget])
+        }
+    }, [addBudgetData]);
 
     const renderBudget = useCallback(({item}: ListRenderItemInfo<Budget>) => (
         <TouchableOpacity style={styles.item} onPress={() => {
@@ -46,7 +73,8 @@ export const HomeScreen = (props: Props) => {
             data?.budgets && !loading &&
             <FlatList
                 style={styles.budgetList}
-                data={data.budgets}
+                data={budgets}
+                extraData={budgets}
                 renderItem={renderBudget}
                 keyExtractor={item => item.id.toString()}
             />
