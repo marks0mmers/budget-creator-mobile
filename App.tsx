@@ -3,21 +3,29 @@
 import React from 'react';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import {StatusBar} from "expo-status-bar";
-import Constants from "expo-constants";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
-import {HomeScreen} from "./src/views/screens/HomeScreen";
 import {BudgetDetailScreen} from "./src/views/screens/BudgetDetailScreen";
 import {StyleSheet} from "react-native";
+import {HeaderDropdown} from "./src/views/shared/HeaderDropdown";
+import {BudgetSelectionScreen} from "./src/views/screens/BudgetSelectionScreen";
 
-console.log(Constants.manifest)
 
 const client = new ApolloClient({
     uri: `https://budget-creator-backend.herokuapp.com/graphql`,
     cache: new InMemoryCache()
 })
 
-const Stack = createStackNavigator();
+export type RootStackParamList = {
+    Home: undefined
+    "Budget Details": {
+        budgetId?: number,
+        budgetTitle?: string,
+        isHeaderDropdownVisible: boolean
+    },
+}
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 const App = () => {
     return (
@@ -33,8 +41,33 @@ const App = () => {
                         headerTintColor: "white",
                     }}
                 >
-                    <Stack.Screen name="Home" component={HomeScreen} options={{title: "Budgets"}}/>
-                    <Stack.Screen name="Budget Details" component={BudgetDetailScreen} />
+                    <Stack.Screen
+                        name="Budget Details"
+                        options={(props) => {
+                            const selectedBudgetTitle = props.route.params?.budgetTitle;
+                            return {
+                                headerTitle: () => <HeaderDropdown
+                                    route={props.route}
+                                    navigation={props.navigation}
+                                    title={selectedBudgetTitle || "Select a Budget"}
+                                />
+                            }
+                        }}
+                    >
+                        {(props => {
+                            return props.route.params?.isHeaderDropdownVisible ? (
+                                <BudgetSelectionScreen
+                                    navigation={props.navigation}
+                                    route={props.route}
+                                />
+                            ) : (
+                                <BudgetDetailScreen
+                                    navigation={props.navigation}
+                                    route={props.route}
+                                />
+                            )
+                        })}
+                    </Stack.Screen>
                 </Stack.Navigator>
             </NavigationContainer>
             <StatusBar/>

@@ -114,6 +114,8 @@ type Mutation {
 
 "Query object"
 type Query {
+    "Get Budget by id"
+    budgetById(id: Int!): BudgetDto
     "Get all budgets"
     budgets(userId: Int!): [BudgetDto!]!
     "Gets all Expense Categories for a User"
@@ -177,4 +179,5 @@ scalar Short
 "The Long scalar type represents a signed 64-bit numeric non-fractional value"
 scalar Long
 
+"The conversion between string and Kotlin LocalDate"
 scalar LocalDate

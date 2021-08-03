@@ -18,8 +18,25 @@ export const GET_BUDGETS = gql`
     }
 `
 
+export interface BudgetByIdResult {
+    budgetById: Budget;
+}
+
+export interface GetBudgetByIdVariables {
+    id: number;
+}
+
+export const GET_BUDGET_BY_ID = gql`
+    query GetBudgetById($id: Int!) {
+        budgetById(id: $id) {
+            id
+            title
+        }
+    }
+`
+
 export interface AddBudgetResult {
-    addBudget: Budget;
+    createBudget: Budget;
 }
 
 export interface AddBudgetVariables {
